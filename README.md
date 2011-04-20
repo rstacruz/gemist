@@ -1,6 +1,11 @@
 # Gemist
 #### An extremely minimal solution to gem isolation
 
+## Why?
+
+Because the world doesn't need Bundler for gem management when Rubygems can do 
+it already. Let me show you what I mean:
+
 ## Getting started
 
 Make a file in your project called `Gemfile`.
