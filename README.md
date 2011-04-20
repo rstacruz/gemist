@@ -70,6 +70,13 @@ Then load them manually:
     $:.unshift *Dir['./vendor/*/lib']
     require 'sinatra/base'
 
+## Oh by the way
+
+Don't use this.
+
+The world has enough gem management gems, and it probably doesn't need 
+another. This is just a proof-of-concept.
+
 ## Not going to happen
 
 Gemist will never have:
