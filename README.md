@@ -1,4 +1,4 @@
-## Gemist
+# Gemist
 #### An extremely minimal solution to gem isolation
 
 ## Getting started
