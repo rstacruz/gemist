@@ -42,7 +42,7 @@ class Gemist::Gemfile
   # Returns the path of the project's Gemfile manifest, or +nil+ if
   # not available.
   def self.path
-    Dir["./{Gemfile,Isolate}"].first
+    Dir["./{Gemistfile,Gemfile,Isolate}"].first
   end
 
   # Checks if the project has a Gemfile manifest.
