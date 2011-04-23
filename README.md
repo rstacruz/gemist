@@ -22,15 +22,16 @@ Make a file in your project called `Gemfile`.
 In your project file, do this.
 This `require`s the gems defined in the Gemfile.
 
-    # init.rb
     require 'gemist'
     Gemist.require
 
 When you run your app, and some gems are not present, a message will show:
 
     $ ruby init.rb
-    Some gems cannot be loaded:
-    Try: gem install ohm -v 0.1.3
+    Some gems cannot be loaded. Try:
+
+    gem install ohm -v 0.1.3
+    gem install json-pure
 
 ## How does it work?
 
@@ -38,16 +39,19 @@ Gemist uses Rubygems to load specific gems. Did you know you can specify a
 gem version by doing `gem "sinatra", ">= 1.0"` in your Ruby project? Gemist 
 is merely a light bridge that does that for you by reading your Gemfile.
 
-For example, if your project does:
+For example, if your project has this Gemfile:
 
-    # Gemfile:
-    # gem "sinatra", "~> 1.2.0", require: "sinatra/base"
-    # gem "nokogiri", ">= 1.2"
+    gem "sinatra", "~> 1.2.0", require: "sinatra/base"
+    gem "nokogiri", ">= 1.2"
+
+Then you do:
+
     Gemist.require
 
 All `Gemist.require` does in the background is:
 
     require 'rubygems'
+
     gem "sinatra", "~> 1.2.0"    # The method #gem is provided
     gem "nokogiri", ">= 1.2"     # by Rubygems.
     require "sinatra/base"
@@ -97,24 +101,23 @@ Informal benchmarks with a Gemfile of one of my projects on Ruby 1.9.2:
     Benchmark.measure { require 'bundler'; Bundler.require }  #=> 2.5s average
     Benchmark.measure { require 'gemist';  Gemist.require }   #=> 1.6s average
 
-## Oh by the way
+## Don't use this
 
-Don't use this.
+This is merely a proof-of-concept. It works (very well), but:
 
-The world has enough gem management gems, and it probably doesn't need 
-another. This is just a proof-of-concept.
+1. The world has enough gem management tools, it doesn't need another.
+
+2. Bundler is better (though it's more bloated and does more things).
 
 ## Not going to happen
 
 Gemist will never have:
 
-### Dependency resolution.
-
+- **Dependency resolution.**  
 If there are conflicts in your gems's requirements, just manually specify the 
-gem version that will satisfy both. Alternatively, stop using too many gems.
+gem version that will satisfy both.  Alternatively, stop using too many gems.
 
-### An installer (like 'bundle install').
-
+- **An installer (like 'bundle install').**  
 Seriously, just install the gems yourself! Gemist even gives you the exact 
 command to do it.
 
