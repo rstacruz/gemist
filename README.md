@@ -38,6 +38,21 @@ Gemist uses Rubygems to load specific gems. Did you know you can specify a
 gem version by doing `gem "sinatra", ">= 1.0"` in your Ruby project? Gemist 
 is merely a light bridge that does that for you by reading your Gemfile.
 
+For example, if your project does:
+
+    # Gemfile:
+    # gem "sinatra", "~> 1.2.0", require: "sinatra/base"
+    # gem "nokogiri", ">= 1.2"
+    Gemist.require
+
+All `Gemist.require` does in the background is:
+
+    require 'rubygems'
+    gem "sinatra", "~> 1.2.0"    # The method #gem is provided
+    gem "nokogiri", ">= 1.2"     # by Rubygems.
+    require "sinatra/base"
+    require "nokogiri"
+
 ## Freezing versions
 
 Bundler users: keep in mind that you will need to freeze gem versions in the 
@@ -77,7 +92,7 @@ Then load them manually:
 
 ## Benchmarks
 
-Informal benchmarks with a Gemfile of one of my projects:
+Informal benchmarks with a Gemfile of one of my projects on Ruby 1.9.2:
 
     Benchmark.measure { require 'bundler'; Bundler.require }  #=> 2.5s average
     Benchmark.measure { require 'gemist';  Gemist.require }   #=> 1.6s average
