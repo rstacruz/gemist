@@ -18,9 +18,9 @@ module Gemist
     end
 
     if @fail.any?
-      list = @fail.map { |g| g.to_command }.join(' ')
-      $stderr << "Some gems failed to load.\n"
-      $stderr << "Try: gem install #{list}\n"
+      list = @fail.map { |g| "gem install #{g.to_command}" }.join("\n")
+      $stderr << "Some gems failed to load. Try:\n\n"
+      $stderr << "#{list.join}\n\n"
       exit
     end
   end
