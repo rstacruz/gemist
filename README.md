@@ -75,6 +75,13 @@ Then load them manually:
     $:.unshift *Dir['./vendor/*/lib']
     require 'sinatra/base'
 
+## Benchmarks
+
+Informal benchmarks with a Gemfile of one of my projects:
+
+    Benchmark.measure { require 'bundler'; Bundler.require }  #=> 2.5s average
+    Benchmark.measure { require 'gemist';  Gemist.require }   #=> 1.6s average
+
 ## Oh by the way
 
 Don't use this.
