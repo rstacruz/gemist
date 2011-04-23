@@ -103,6 +103,10 @@ private
     yield
     @group = nil
   end
+
+  # Does nothing. Here for Bundler compatibility.
+  def source(src)
+  end
 end
 
 # A Gem in the gemfile.
@@ -122,13 +126,18 @@ class Gemist::Gem
   # Activates the gem; returns +false+ if it's not available.
   def load!
     Kernel.send :gem, name, version
-  rescue ::Gem::LoadError
+    true
+  rescue ::Gem::LoadError => e
     false
   end
 
   # Loads the gem via +require+. Make sure you load! it first.
+  # Returns true if loaded.
   def require!
     Kernel::require require
+    true
+  rescue LoadError => e
+    false
   end
 
   # Returns the +gem install+ paramaters needed to install the gem.
