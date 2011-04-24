@@ -140,7 +140,7 @@ class Gemist::Gem
   # Loads the gem via +require+. Make sure you load! it first.
   # Returns true if loaded.
   def require!
-    Kernel::require require
+    [*require].each { |r| Kernel::require r }
     true
   rescue LoadError => e
     false
