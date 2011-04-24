@@ -2,6 +2,12 @@ require 'ostruct'
 
 # Gem environment manager.
 module Gemist
+  VERSION = "0.0.2"
+
+  def self.version
+    VERSION
+  end
+
   # Loads the gems via +require+.
   def self.require(env=ENV['RACK_ENV'])
     load_rubygems
