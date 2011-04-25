@@ -73,7 +73,7 @@ should add versions like so (using `~>` is highly recommended):
     # Gemfile
     gem "sinatra", "~> 1.1"
 
-If you need a `Gemfile.lock` (e.g., in Heroku), use `bundle install --local`.
+If you need a Gemfile.lock for whatever reason, use `bundle install --local`.
 
 ### Vendoring gems
 
