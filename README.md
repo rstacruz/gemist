@@ -1,10 +1,8 @@
 # Gemist
 #### An extremely minimal solution to gem isolation
 
-## Why?
-
-Because the world doesn't need Bundler for gem management when Rubygems can do 
-it already. Let me show you what I mean:
+**You don't need Bundler for gem management.** Rubygems can do it already. Let me show you 
+what I mean:
 
 ## Getting started
 
@@ -13,11 +11,14 @@ Make a file in your project called `Gemfile`.
     # Gemfile
     gem "sinatra"
     gem "ohm", "0.1.3"
-   
+
     # These will only be for the development environment
     group :development do
       gem "json-pure", require: "json"
     end
+
+    # You may specify multiple files to be required
+    gem "rails", ">= 3.0", require: ['rails', 'action_controller']
 
 In your project file, do this.
 This `require`s the gems defined in the Gemfile.
@@ -57,26 +58,24 @@ All `Gemist.require` does in the background is:
     require "sinatra/base"
     require "nokogiri"
 
-## Freezing versions
+## How to do other things
 
-Bundler users: keep in mind that you will need to freeze gem versions in the 
-`Gemfile` itself, as Gemist doesn't care about your `Gemfile.lock`.
+Gemist doesn't have some of Bundler's conveniences that Rubygems can already 
+handle.
 
-This means that to ensure your app will work with future gem releases, you 
+### Freezing gem versions
+
+Gemist doesn't care about your `Gemfile.lock`.
+
+This means that to ensure your app will work with future gem releases, you
 should add versions like so (using `~>` is highly recommended):
 
     # Gemfile
     gem "sinatra", "~> 1.1"
 
-## More common usage
+If you need a `Gemfile.lock` (e.g., in Heroku), use `bundle install --local`.
 
-This `require`s the gems in a specific environment. If a group is not 
-specified, Gemist assumes whatever is in `RACK_ENV`.
-
-    require 'gemist'
-    Gemist.require :development
-
-## Vendoring gems
+### Vendoring gems
 
 Gemist does NOT vendor gems for you. Rubygems helps you with that already!
 
@@ -93,6 +92,28 @@ Then load them manually:
     # init.rb
     $:.unshift *Dir['./vendor/*/lib']
     require 'sinatra/base'
+
+### More common usage
+
+If you prefer to `require` gems individually yourself, use `Gemist.setup`.
+
+    require 'gemist'
+    Gemist.setup
+
+Alternatively, you may also use the syntactic sugar (does the same thing as 
+above):
+
+    require 'gemist/setup'
+
+To require gems from a specific group, use `Gemist.require <group>`.
+(By default, Gemist assumes whatever is in `RACK_ENV`.)
+
+    require 'gemist'
+    Gemist.require :development
+
+There's also syntactic sugar for `Gemist.require ENV['RACK_ENV']`:
+
+    require 'gemist/require'
 
 ## Benchmarks
 
@@ -121,3 +142,6 @@ gem version that will satisfy both.  Alternatively, stop using too many gems.
 Seriously, just install the gems yourself! Gemist even gives you the exact 
 command to do it.
 
+## Authors
+
+Done by Rico Sta. Cruz and released under the MIT license.
