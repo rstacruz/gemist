@@ -8,23 +8,27 @@ what I mean:
 
 Make a file in your project called `Gemfile`.
 
-    # Gemfile
-    gem "sinatra"
-    gem "ohm", "0.1.3"
+``` ruby
+# Gemfile
+gem "sinatra"
+gem "ohm", "0.1.3"
 
-    # These will only be for the development environment
-    group :development do
-      gem "json-pure", require: "json"
-    end
+# These will only be for the development environment
+group :development do
+  gem "json-pure", require: "json"
+end
 
-    # You may specify multiple files to be required
-    gem "rails", ">= 3.0", require: ['rails', 'action_controller']
+# You may specify multiple files to be required
+gem "rails", ">= 3.0", require: ['rails', 'action_controller']
+```
 
 In your project file, do this.
 This `require`s the gems defined in the Gemfile.
 
-    require 'gemist'
-    Gemist.require
+``` ruby
+require 'gemist'
+Gemist.require
+```
 
 When you run your app, and some gems are not present, a message will show:
 
@@ -42,21 +46,27 @@ is merely a light bridge that does that for you by reading your Gemfile.
 
 For example, if your project has this Gemfile:
 
-    gem "sinatra", "~> 1.2.0", require: "sinatra/base"
-    gem "nokogiri", ">= 1.2"
+``` ruby
+gem "sinatra", "~> 1.2.0", require: "sinatra/base"
+gem "nokogiri", ">= 1.2"
+```
 
 Then you do:
 
-    Gemist.require
+``` ruby
+Gemist.require
+````
 
 All `Gemist.require` does in the background is:
 
-    require 'rubygems'
+``` ruby
+require 'rubygems'
 
-    gem "sinatra", "~> 1.2.0"    # The method #gem is provided
-    gem "nokogiri", ">= 1.2"     # by Rubygems.
-    require "sinatra/base"
-    require "nokogiri"
+gem "sinatra", "~> 1.2.0"    # The method #gem is provided
+gem "nokogiri", ">= 1.2"     # by Rubygems.
+require "sinatra/base"
+require "nokogiri"
+```
 
 ## How to do other things
 
@@ -70,8 +80,10 @@ Gemist doesn't care about your `Gemfile.lock`.
 This means that to ensure your app will work with future gem releases, you
 should add versions like so (using `~>` is highly recommended):
 
-    # Gemfile
-    gem "sinatra", "~> 1.1"
+``` ruby
+# Gemfile
+gem "sinatra", "~> 1.1"
+```
 
 If you need a Gemfile.lock for whatever reason, use `bundle install --local`.
 
@@ -89,38 +101,50 @@ Second, freeze your gems like so:
 
 Then load them manually:
 
-    # init.rb
-    $:.unshift *Dir['./vendor/*/lib']
-    require 'sinatra/base'
+``` ruby
+# init.rb
+$:.unshift *Dir['./vendor/*/lib']
+require 'sinatra/base'
+```
 
 ### More common usage
 
 If you prefer to `require` gems individually yourself, use `Gemist.setup`.
 
-    require 'gemist'
-    Gemist.setup
+``` ruby
+require 'gemist'
+Gemist.setup
+```
 
 Alternatively, you may also use the syntactic sugar (does the same thing as 
 above):
 
-    require 'gemist/setup'
+``` ruby
+require 'gemist/setup'
+```
 
 To require gems from a specific group, use `Gemist.require <group>`.
 (By default, Gemist assumes whatever is in `RACK_ENV`.)
 
-    require 'gemist'
-    Gemist.require :development
+``` ruby
+require 'gemist'
+Gemist.require :development
+```
 
 There's also syntactic sugar for `Gemist.require ENV['RACK_ENV']`:
 
-    require 'gemist/require'
+``` ruby
+require 'gemist/require'
+```
 
 ## Benchmarks
 
 Informal benchmarks with a Gemfile of one of my projects on Ruby 1.9.2:
 
-    Benchmark.measure { require 'bundler'; Bundler.require }  #=> 2.5s average
-    Benchmark.measure { require 'gemist';  Gemist.require }   #=> 1.6s average
+``` ruby
+Benchmark.measure { require 'bundler'; Bundler.require }  #=> 2.5s average
+Benchmark.measure { require 'gemist';  Gemist.require }   #=> 1.6s average
+```
 
 ## Don't use this
 
