@@ -1,8 +1,8 @@
 # Gemist
 #### An extremely minimal solution to gem isolation
 
-**You don't need Bundler for gem management.** Rubygems can do it already. Let me show you 
-what I mean:
+You don't need Bundler for gem management. Rubygems can do it already. Let me 
+show you what I mean:
 
 ## Getting started
 
