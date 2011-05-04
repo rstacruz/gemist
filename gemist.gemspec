@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "gemist"
-  s.version = "0.0.2"
+  s.version = "0.0.3"
   s.summary = %{An extremely minimal solution to gem isolation}
   s.description = %Q{Gemist leverages on purely Rubygems to require the correct gem versions in a project.}
   s.authors = ["Rico Sta. Cruz"]
