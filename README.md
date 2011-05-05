@@ -1,6 +1,8 @@
 # Gemist
 #### An extremely minimal solution to gem isolation
 
+**Bundler + faster + smaller (<4kb) = Gemist**
+
 You don't need Bundler for gem management. Rubygems can do it already. Let me 
 show you what I mean:
 
@@ -85,7 +87,7 @@ should add versions like so (using `~>` is highly recommended):
 gem "sinatra", "~> 1.1"
 ```
 
-If you need a Gemfile.lock for whatever reason, use `bundle install --local`.
+If you need a Gemfile.lock for whatever reason, use `bundle update --local`.
 
 ### Vendoring gems
 
