@@ -27,7 +27,7 @@ module Gemist
       list = @fail.map { |g| "gem install #{g.to_command}" }.join("\n")
       $stderr << "Some gems failed to load. Try:\n\n"
       $stderr << "#{list}\n\n"
-      exit
+      exit 256
     end
   end
 
