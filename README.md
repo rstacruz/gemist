@@ -42,9 +42,9 @@ When you run your app, and some gems are not present, a message will show:
 
 ## How does it work?
 
-Gemist uses Rubygems to load specific gems. Did you know you can specify a 
-gem version by doing `gem "sinatra", ">= 1.0"` in your Ruby project? Gemist 
-is merely a light bridge that does that for you by reading your Gemfile.
+Gemist uses Rubygems to load specific gems. Did you know you can specify a gem 
+version using Rubygems's `Gem.activate`? Gemist is merely a light bridge that 
+does that for you by reading your Gemfile.
 
 For example, if your project has this Gemfile:
 
@@ -64,8 +64,8 @@ All `Gemist.require` does in the background is:
 ``` ruby
 require 'rubygems'
 
-gem "sinatra", "~> 1.2.0"    # The method #gem is provided
-gem "nokogiri", ">= 1.2"     # by Rubygems.
+::Gem.activate "sinatra", "~> 1.2.0"
+::Gem.activate "nokogiri", ">= 1.2"
 require "sinatra/base"
 require "nokogiri"
 ```

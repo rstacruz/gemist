@@ -131,7 +131,7 @@ class Gemist::Gem
 
   # Activates the gem; returns +false+ if it's not available.
   def load!
-    Kernel.send :gem, name, version
+    ::Gem.activate name, version
     true
   rescue ::Gem::LoadError => e
     false
