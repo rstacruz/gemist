@@ -24,9 +24,15 @@ module Gemist
     end
 
     if @fail.any?
-      list = @fail.map { |g| "gem install #{g.to_command}" }.join("\n")
-      $stderr << "Some gems failed to load. Try:\n\n"
-      $stderr << "#{list}\n\n"
+      commands = @fail.map { |g| g.to_command }.compact
+      list     = commands.map { |cmd| "gem install #{cmd}" }
+
+      if list.any?
+        $stderr << "Some gems failed to load. Try:\n\n"
+        $stderr << "#{list.join("\n")}\n\n"
+      end
+
+      print_errors_for(@fail)
       exit 256
     end
   end
@@ -37,6 +43,17 @@ module Gemist
   end
 
 private
+  # Prints errors for failed gems
+  def self.print_errors_for(gems)
+    # Remove those
+    gems = gems.reject { |g| g.error.name == g.name }
+
+    if gems.any?
+      $stderr << "These errors occured:\n"
+      gems.each { |gem| $stderr << "  [#{gem.name}] #{gem.error.to_s}\n" }
+    end
+  end
+
   # Loads rubygems. Skips if it's not needed (like in Ruby 1.9)
   def self.load_rubygems
     Kernel.require 'rubygems'  unless Object.const_defined?(:Gem)
@@ -121,6 +138,7 @@ class Gemist::Gem
   attr_accessor :version
   attr_accessor :require
   attr_accessor :group
+  attr_reader :error
 
   def initialize(options)
     self.name    ||= options[:name]
@@ -134,6 +152,7 @@ class Gemist::Gem
     ::Gem.activate name, version
     true
   rescue ::Gem::LoadError => e
+    @error = e
     false
   end
 
@@ -148,6 +167,10 @@ class Gemist::Gem
 
   # Returns the +gem install+ paramaters needed to install the gem.
   def to_command
-    [name, ("-v \"#{version}\""  if version)].compact.join ' '
+    if error
+      [error.name, ("-v \"#{error.requirement}\"")].join ' '  if error.name
+    else
+      [name, ("-v \"#{version}\""  if version)].compact.join ' '
+    end
   end
 end
