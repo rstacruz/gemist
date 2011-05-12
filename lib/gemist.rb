@@ -160,9 +160,6 @@ class Gemist::Gem
   # Returns true if loaded.
   def require!
     [*require].each { |r| Kernel::require r }
-    true
-  rescue LoadError => e
-    false
   end
 
   # Returns the +gem install+ paramaters needed to install the gem.
