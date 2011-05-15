@@ -148,7 +148,8 @@ class Gemist::Gem
     self.name     ||= options[:name]
     self.versions ||= options[:version]
     self.group    ||= options[:group]
-    self.require  ||= options[:require] || self.name
+    self.require  ||= options[:require]
+    self.require    = self.name  if self.require.nil?
   end
 
   # Activates the gem; returns +false+ if it's not available.
@@ -163,7 +164,7 @@ class Gemist::Gem
   # Loads the gem via +require+. Make sure you load! it first.
   # Returns true if loaded.
   def require!
-    [*require].each { |r| Kernel.require r }
+    [*require].each { |r| Kernel.require r  if r }
   end
 
   # Returns the +gem install+ paramaters needed to install the gem.
