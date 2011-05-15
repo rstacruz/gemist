@@ -65,6 +65,10 @@ class Gemist::Gemfile
   # Returns the path of the project's Gemfile manifest, or +nil+ if
   # not available.
   def self.path
+    %w(GEMFILE BUNDLER_GEMFILE).each do |spec|
+      return ENV[spec]  if ENV[spec] && File.exists?(ENV[spec])
+    end
+
     Dir["./{Gemistfile,Gemfile,Isolate}"].first
   end
 
@@ -102,11 +106,11 @@ private
   #   gem "sinatra", "1.1"
   #   gem "sinatra", "1.1", :require => "sinatra/base"
   #
-  def gem(name, ver=nil, options={})
-    ver, options = nil, ver  if ver.is_a?(Hash)
+  def gem(name, *args)
+    options = args.last.is_a?(Hash) ? args.pop : Hash.new
 
     options[:name]    ||= name
-    options[:version] ||= ver
+    options[:version] ||= args
     options[:group]   ||= @group
 
     self.gems << Gemist::Gem.new(options)
@@ -135,21 +139,21 @@ end
 # A Gem in the gemfile.
 class Gemist::Gem
   attr_accessor :name
-  attr_accessor :version
+  attr_accessor :versions
   attr_accessor :require
   attr_accessor :group
   attr_reader :error
 
   def initialize(options)
-    self.name    ||= options[:name]
-    self.version ||= options[:version]
-    self.group   ||= options[:group]
-    self.require ||= options[:require] || self.name
+    self.name     ||= options[:name]
+    self.versions ||= options[:version]
+    self.group    ||= options[:group]
+    self.require  ||= options[:require] || self.name
   end
 
   # Activates the gem; returns +false+ if it's not available.
   def load!
-    ::Gem.activate name, version
+    ::Gem.activate name, *versions
     true
   rescue ::Gem::LoadError => e
     @error = e
@@ -159,15 +163,21 @@ class Gemist::Gem
   # Loads the gem via +require+. Make sure you load! it first.
   # Returns true if loaded.
   def require!
-    [*require].each { |r| Kernel::require r }
+    [*require].each { |r| Kernel.require r }
   end
 
   # Returns the +gem install+ paramaters needed to install the gem.
   def to_command
     if error
-      [error.name, ("-v \"#{error.requirement}\"")].join ' '  if error.name
+      [error.name, *version_join(error.requirement.to_s.split(', '))].join(' ')  if error.name
     else
-      [name, ("-v \"#{version}\""  if version)].compact.join ' '
+      [name, version_join(versions)].compact.join ' '
     end
+  end
+
+private
+  def version_join(vers)
+    versions = [*vers].sort.map { |v| "-v #{v.to_s.inspect}"  unless v.to_s == '>= 0' }.compact
+    versions.join(' ')  unless versions.empty?
   end
 end
