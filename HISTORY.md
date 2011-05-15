@@ -1,3 +1,18 @@
+v0.0.4 - May 15, 2011
+---------------------
+
+### Fixed:
+  * Apps now exit with an exit code when it can't load certain gems
+
+### Added:
+  * Allow multiple version requirements
+  * Passthru require errors
+  * Show gem loading errors that aren't the usual 'can't load X'
+
+### Changed:
+  * Use plain old gemspecs instead of joe
+  * Use the more-canonical Gem.activate
+
 v0.0.3 - May 04, 2011
 ---------------------
 
