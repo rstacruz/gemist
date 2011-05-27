@@ -1,12 +1,19 @@
 # Gemist
 #### An extremely minimal solution to gem isolation
 
-**Bundler + faster + smaller (<4kb) = Gemist**
+Gemist is a solution to load the correct gems for a project based on a Gemfile 
+manifest.
 
-You don't need Bundler for gem management. Rubygems can do it already. Let me 
-show you what I mean:
+Gemist is a leaner (4kb), faster runtime that is Bundler-compatible. It does not 
+actually require Bundler.
 
 ## Getting started
+
+Install it:
+
+```
+$ gem install gemist
+```
 
 Make a file in your project called `Gemfile`.
 
@@ -77,17 +84,17 @@ handle.
 
 ### Freezing gem versions
 
-Gemist doesn't care about your `Gemfile.lock`.
+If your project has a Bundler-generated `Gemfile.lock` file, Gemist will use it.  
+This file can be generated using `bundle update --local`. Note that this is 
+completely optional!
 
-This means that to ensure your app will work with future gem releases, you
-should add versions like so (using `~>` is highly recommended):
+Also, to ensure your app will work with future gem releases, you should add 
+versions like so (using `~>` is highly recommended):
 
 ``` ruby
 # Gemfile
 gem "sinatra", "~> 1.1"
 ```
-
-If you need a Gemfile.lock for whatever reason, use `bundle update --local`.
 
 ### Vendoring gems
 
@@ -147,14 +154,6 @@ Informal benchmarks with a Gemfile of one of my projects on Ruby 1.9.2:
 Benchmark.measure { require 'bundler'; Bundler.require }  #=> 2.5s average
 Benchmark.measure { require 'gemist';  Gemist.require }   #=> 1.6s average
 ```
-
-## Don't use this
-
-This is merely a proof-of-concept. It works (very well), but:
-
-1. The world has enough gem management tools, it doesn't need another.
-
-2. Bundler is better (though it's more bloated and does more things).
 
 ## Not going to happen
 
