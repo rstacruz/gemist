@@ -2,7 +2,7 @@ require 'ostruct'
 
 # Gem environment manager.
 module Gemist
-  VERSION = "0.0.5"
+  VERSION = "0.1.0"
 
   def self.version
     VERSION
