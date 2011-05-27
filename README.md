@@ -11,15 +11,15 @@ actually require Bundler.
 
 Install it:
 
-```
-$ gem install gemist
-```
+    $ gem install gemist
 
 Make a file in your project called `Gemfile`.
 
 ``` ruby
 # Gemfile
 gem "sinatra"
+gem "haml"
+gem "sass"
 gem "ohm", "0.1.3"
 
 # These will only be for the development environment
@@ -29,10 +29,13 @@ end
 
 # You may specify multiple files to be required
 gem "rails", ">= 3.0", require: ['rails', 'action_controller']
+
+# You can also specify more than one version requirement
+gem "compass", "~> 0.11.1", "<= 0.11.5"
 ```
 
 In your project file, do this.
-This `require`s the gems defined in the Gemfile.
+This `require`s the gems defined in the Gemfile based on the `RACK_ENV`.
 
 ``` ruby
 require 'gemist'
