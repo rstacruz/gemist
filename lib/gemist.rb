@@ -72,6 +72,10 @@ class Gemist::Gemfile
     Dir["./{Gemistfile,Gemfile,Isolate}"].first
   end
 
+  def self.lockfile_path
+    Dir["./{Gemistfile,Gemfile,Isolate}.lock"].first
+  end
+
   # Checks if the project has a Gemfile manifest.
   def self.exists?
     !!path
@@ -79,11 +83,24 @@ class Gemist::Gemfile
 
   # Returns a Gemfile instance made from the project's manifest.
   def self.load
-    new File.read(path)  if exists?
+    new(File.read(path), lockfile_contents)  if exists?
   end
 
-  def initialize(contents)
+  def initialize(contents, lockfile)
     instance_eval contents
+
+    # Parse the lockfile
+    if lockfile
+      lockfile.split("\n").each { |s|
+        name, version = s.scan(/^    ([^ ]+) \(([0-9].*?)\)$/).first
+        self.gem name, version  if name
+      }
+    end
+  end
+
+  # Returns a gem
+  def [](name)
+    gems.select { |gem| gem.name == name }.first
   end
 
   # The list of gems the Gemfile. Returns an array of Gem instances.
@@ -96,7 +113,11 @@ class Gemist::Gemfile
     gems.select { |g| g.group == nil || g.group.include?(env.to_s.to_sym) }
   end
 
-private
+protected
+  def self.lockfile_contents
+    File.read(lockfile_path)  if lockfile_path
+  end
+
   # (DSL) Adds a gem.
   #
   # == Example
@@ -113,7 +134,13 @@ private
     options[:version] ||= args
     options[:group]   ||= @group
 
-    self.gems << Gemist::Gem.new(options)
+    gem = self[name]
+
+    if gem
+      gem.update options
+    else
+      self.gems << Gemist::Gem.new(options)
+    end
   end
 
   # (DSL) Defines a group.
@@ -144,11 +171,15 @@ class Gemist::Gem
   attr_accessor :group
   attr_reader :error
 
-  def initialize(options)
-    self.name     ||= options[:name]
-    self.versions ||= options[:version]
-    self.group    ||= options[:group]
-    self.require  ||= options[:require]
+  def initialize(options={})
+    update options
+  end
+
+  def update(options={})
+    self.name       = options[:name]     unless options[:name].nil?
+    self.versions   = options[:version]  unless options[:version].nil?
+    self.group      = options[:group]    unless options[:group].nil?
+    self.require    = options[:require]  unless options[:require].nil?
     self.require    = self.name  if self.require.nil?
   end
 

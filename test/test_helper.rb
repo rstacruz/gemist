@@ -20,11 +20,16 @@ class Test::Unit::TestCase
   end
 
   def fixture(path)
-    File.expand_path("../fixtures/#{path}", __FILE__)
+    fx path
   end
 
   def use_gemfile(what)
-    ENV['GEMFILE'] = fixture(what)
+    ENV['GEMFILE'] = what.nil? ? nil : fixture(what)
     Gemist.class_variable_set :@@gemfile, nil
   end
 end
+
+def fx(path='')
+  File.expand_path("../fixtures/#{path}", __FILE__)
+end
+
