@@ -12,8 +12,6 @@ class LockTest < Test::Unit::TestCase
 
   test "Gemfile.lock" do
     Gem.expects(:activate).with('sinatra', '1.2.6').returns(true)
-    Gem.expects(:activate).with('tilt', '1.3').returns(true)
-    Gem.expects(:activate).with('rack', '1.2.1').returns(true)
 
     Gemist.setup
   end

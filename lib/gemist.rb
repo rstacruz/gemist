@@ -93,7 +93,8 @@ class Gemist::Gemfile
     if lockfile
       lockfile.split("\n").each { |s|
         name, version = s.scan(/^    ([^ ]+) \(([0-9].*?)\)$/).first
-        self.gem name, version  if name
+        gem = self[name]
+        gem.versions = [version]  if gem
       }
     end
   end

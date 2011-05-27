@@ -1,5 +1,6 @@
 GEM
   specs:
+    contest (0.1.2)
     rack (1.2.1)
     sinatra (1.2.6)
       rack (~> 1.1)
@@ -10,4 +11,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  contest
   sinatra (~> 1.2.6)
