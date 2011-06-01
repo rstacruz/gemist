@@ -6,8 +6,12 @@ class GemistTest < Test::Unit::TestCase
     Gem.expects(:activate).with('yard').returns(true)
     Gem.expects(:activate).with('test-unit', '~> 0.5').returns(true)
     Gem.expects(:activate).with('ffaker', '>= 1.0', '<= 1.3').returns(true)
-
+    Gem.expects(:activate).with('hpricot').returns(true)
     use_gemfile 'sample.gemfile'
+  end
+
+  test "sample - install" do
+    Gemist.install
   end
 
   test "sample - setup" do
@@ -19,7 +23,9 @@ class GemistTest < Test::Unit::TestCase
     Kernel.expects(:require).with('yard').returns(true)
     Kernel.expects(:require).with('test/unit').returns(true)
     Kernel.expects(:require).with('faker').returns(true)
-
+    Kernel.expects(:require).with('hpricot').returns(true)
     Gemist.require
   end
+
+
 end
