@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'rubygems/dependency_installer'
 
 # Gem environment manager.
 module Gemist
@@ -36,6 +37,28 @@ module Gemist
       exit 256
     end
   end
+
+  # Installs the gems for a given environment.
+  def self.install(env=ENV['RACK_ENV'])
+    @fail = Array.new 
+
+    gemfile.gems_for(env).each do |g|
+      g.install! or @fail << g
+    end
+
+    if @fail.any?
+      commands = @fail.map { |g| g.to_command }.compact
+      list     = commands.map { |cmd| "gem install #{cmd}" }
+
+      if list.any?
+        $stderr << "Some gems failed to install. Try:\n\n"
+        $stderr << "#{list.join("\n")}\n\n"
+      end
+
+      print_errors_for(@fail)
+      exit 256
+    end    
+  end  
 
   # Returns the Gemfile for the current project.
   def self.gemfile
@@ -114,6 +137,11 @@ class Gemist::Gemfile
     gems.select { |g| g.group == nil || g.group.include?(env.to_s.to_sym) }
   end
 
+  # Set the source for rubygems. Note: Only supports a single source for now
+  def source(src)
+    # ::Gem.sources = [src]
+  end 
+
 protected
   def self.lockfile_contents
     File.read(lockfile_path)  if lockfile_path
@@ -159,9 +187,7 @@ protected
     @group = nil
   end
 
-  # Does nothing. Here for Bundler compatibility.
-  def source(src)
-  end
+
 end
 
 # A Gem in the gemfile.
@@ -170,6 +196,7 @@ class Gemist::Gem
   attr_accessor :versions
   attr_accessor :require
   attr_accessor :group
+  attr_accessor :source
   attr_reader :error
 
   def initialize(options={})
@@ -193,6 +220,17 @@ class Gemist::Gem
     false
   end
 
+  # Installs the gem; returns +false" if it failed.
+  def install!(options={})
+    installer = ::Gem::DependencyInstaller.new(options)
+    puts "Installing gem #{name} #{versions.last}"
+    installer.install name, *versions.last
+  rescue ::Gem::GemNotFoundException => e
+    puts "Failed to install gem #{name} #{versions.last}. Try: gem install #{to_command} "
+    @error = e
+    false
+  end
+
   # Loads the gem via +require+. Make sure you load! it first.
   # Returns true if loaded.
   def require!
@@ -202,7 +240,7 @@ class Gemist::Gem
   # Returns the +gem install+ paramaters needed to install the gem.
   def to_command
     if error
-      [error.name, *version_join(error.requirement.to_s.split(', '))].join(' ')  if error.name
+      [error.name, *version_join(error.requirement.to_s.split(', '))].join(' ')  if error.name && error.respond_to?(:requirement)
     else
       [name, version_join(versions)].compact.join ' '
     end
